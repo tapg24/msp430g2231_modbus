@@ -21,10 +21,10 @@ void dispatchModbusRequest() {
 	__bis_SR_register(GIE); // interrupts enabled
 
 	while (1) {
-//		if (hasReceived) // If the device has recieved a value
-//		{
-//			Receive();
-//		}
+		if (hasReceived) // If the device has recieved a value
+		{
+			Receive();
+		}
 		if (ADCDone) // If the ADC is done with a measurement
 		{
 			ADCDone = false; // Clear flag

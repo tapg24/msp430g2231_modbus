@@ -12,54 +12,54 @@
 /**
  * Handles the received byte and calls the needed functions.\
 **/
-//void Receive() {
-//	hasReceived = false; // Clear the flag
-//	switch (RXByte) // Switch depending on command value received
-//	{
-//	case TEST_SPEED:
-//		P1OUT |= BIT0; // Turn on LED while testing
-//		for (i = 0; i != 0x100; i++) // Loop 256 times
-//				{
-//			TXByte = i; // Sends the counter as if it were a 16 bit value
-//			Transmit();
-//			TXByte = 0;
-//			Transmit();
-//		}
-//		P1OUT &= ~BIT0; // Turn off the LED
-//		break;
-//	case M_A3:
-//		Single_Measure(INCH_3); // Reads A3 only once
-//		break;
-//	case M_TEMP:
-//		Single_Measure_REF(INCH_10, 0); // Reads the temperature sensor once
-//		break;
-//	case M_VCC:
-//		Single_Measure_REF(INCH_11, REF2_5V); // Reads VCC once (VCC/2 internally)
-//		break;
-//	default:
-//		;
-//	}
-//}
+void Receive() {
+	hasReceived = false; // Clear the flag
+	switch (RXByte) // Switch depending on command value received
+	{
+	case TEST_SPEED:
+		P1OUT |= BIT0; // Turn on LED while testing
+		for (i = 0; i != 0x100; i++) // Loop 256 times
+				{
+			TXByte = i; // Sends the counter as if it were a 16 bit value
+			Transmit();
+			TXByte = 0;
+			Transmit();
+		}
+		P1OUT &= ~BIT0; // Turn off the LED
+		break;
+	case M_A3:
+		Single_Measure(INCH_3); // Reads A3 only once
+		break;
+	case M_TEMP:
+		Single_Measure_REF(INCH_10, 0); // Reads the temperature sensor once
+		break;
+	case M_VCC:
+		Single_Measure_REF(INCH_11, REF2_5V); // Reads VCC once (VCC/2 internally)
+		break;
+	default:
+		;
+	}
+}
 
 /**
  * Transmits the value currently in TXByte. The function waits till it is
  * finished transmiting before it returns.
  **/
-//void Transmit() {
-//	while (isReceiving)
-//		; // Wait for RX completion
-//	TXByte |= 0x100; // Add stop bit to TXByte (which is logical 1)
-//	TXByte = TXByte << 1; // Add start bit (which is logical 0)
-//	BitCnt = 0xA; // Load Bit counter, 8 bits + ST/SP
-//
-//	CCTL0 = OUT; // TXD Idle as Mark
-//	TACTL = TASSEL_2 + MC_2; // SMCLK, continuous mode
-//	CCR0 = TAR; // Initialize compare register
-//	CCR0 += BIT_TIME; // Set time till first bit
-//	CCTL0 = CCIS0 + OUTMOD0 + CCIE; // Set signal, intial value, enable interrupts
-//	while ( CCTL0 & CCIE)
-//		; // Wait for previous TX completion
-//}
+void Transmit() {
+	while (isReceiving)
+		; // Wait for RX completion
+	TXByte |= 0x100; // Add stop bit to TXByte (which is logical 1)
+	TXByte = TXByte << 1; // Add start bit (which is logical 0)
+	BitCnt = 0xA; // Load Bit counter, 8 bits + ST/SP
+
+	CCTL0 = OUT; // TXD Idle as Mark
+	TACTL = TASSEL_2 + MC_2; // SMCLK, continuous mode
+	CCR0 = TAR; // Initialize compare register
+	CCR0 += BIT_TIME; // Set time till first bit
+	CCTL0 = CCIS0 + OUTMOD0 + CCIE; // Set signal, intial value, enable interrupts
+	while ( CCTL0 & CCIE)
+		; // Wait for previous TX completion
+}
 
 /**
  * Starts the receive timer, and disables any current transmission.
@@ -121,37 +121,37 @@ void Timer_A_ISR(void) {
 	}
 }
 
-bool uart_getc(uint8_t *c) {
-	if (!hasReceived)
-	{
-		return false;
-	}
-	*c = RXByte;
-	hasReceived = false;
-	return true;
-}
-void uart_putc(uint8_t c) {
-	TXByte = c;
-	while (isReceiving)
-		; // Wait for RX completion
-	CCTL0 = OUT; // TXD Idle as Mark
-	TACTL = TASSEL_2 + MC_2; // SMCLK, continuous mode
-	BitCnt = 0xA; // Load Bit counter, 8 bits + ST/SP
-	CCR0 = TAR; // Initialize compare register
-	CCR0 += BIT_TIME; // Set time till first bit
-	TXByte |= 0x100; // Add stop bit to TXByte (which is logical 1)
-	TXByte = TXByte << 1; // Add start bit (which is logical 0)
-	CCTL0 = CCIS_0 + OUTMOD_0 + CCIE + OUT; // Set signal, intial value, enable interrupts
-	while ( CCTL0 & CCIE)
-		; // Wait for previous TX completion
-}
-void uart_puts(const char *str)
-{
-	if (*str != 0)
-		uart_putc(*str++);
-	while (*str != 0)
-		uart_putc(*str++);
-}
+//bool uart_getc(uint8_t *c) {
+//	if (!hasReceived)
+//	{
+//		return false;
+//	}
+//	*c = RXByte;
+//	hasReceived = false;
+//	return true;
+//}
+//void uart_putc(uint8_t c) {
+//	TXByte = c;
+//	while (isReceiving)
+//		; // Wait for RX completion
+//	CCTL0 = OUT; // TXD Idle as Mark
+//	TACTL = TASSEL_2 + MC_2; // SMCLK, continuous mode
+//	BitCnt = 0xA; // Load Bit counter, 8 bits + ST/SP
+//	CCR0 = TAR; // Initialize compare register
+//	CCR0 += BIT_TIME; // Set time till first bit
+//	TXByte |= 0x100; // Add stop bit to TXByte (which is logical 1)
+//	TXByte = TXByte << 1; // Add start bit (which is logical 0)
+//	CCTL0 = CCIS_0 + OUTMOD_0 + CCIE + OUT; // Set signal, intial value, enable interrupts
+//	while ( CCTL0 & CCIE)
+//		; // Wait for previous TX completion
+//}
+//void uart_puts(const char *str)
+//{
+//	if (*str != 0)
+//		uart_putc(*str++);
+//	while (*str != 0)
+//		uart_putc(*str++);
+//}
 /**
  * ISR for RXD
  */
