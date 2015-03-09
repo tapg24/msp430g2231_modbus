@@ -12,25 +12,28 @@
 #include "stdbool.h"
 #include "settings.h"
 
-unsigned char BitCnt; // Bit count, used when transmitting byte
-unsigned int TXByte; // Value sent over UART when Transmit() is called
-unsigned int RXByte; // Value recieved once hasRecieved is set
+uint8_t BitCnt; // Bit count, used when transmitting byte
+//uint16_t TXByte; // Value sent over UART when Transmit() is called
+char TXByte; // Value sent over UART when Transmit() is called
+//uint16_t RXByte; // Value recieved once hasRecieved is set
+char RXByte; // Value recieved once hasRecieved is set
 
-unsigned int i; // 'for' loop variable
+uint8_t i; // 'for' loop variable
 
 bool isReceiving; // Status for when the device is receiving
 bool hasReceived; // Lets the program know when a byte is received
+bool isTimeout;
 
 /**
  * Transmits the value currently in TXByte. The function waits till it is
  * finished transmiting before it returns.
  **/
-void Transmit(void);
+//void Transmit(void);
 
 /**
  * Handles the received byte and calls the needed functions.\
 **/
-void Receive(void);
+//void Receive(void);
 
 /**
  * Starts the receive timer, and disables any current transmission.
@@ -44,6 +47,15 @@ void Port_1_ISR(void);
  **/
 //#pragma vector=TIMERA0_VECTOR
 //__interrupt
-void Timer_A_ISR(void);
+void Timer_A0_ISR(void);
+
+bool softuart_getc(uint16_t *c);
+void softuart_putc(uint16_t c);
+
+bool softuart_getchar(char *c);
+void softuart_putchar(char c);
+
+void softuart_puts(const char *str);
+bool softuart_readline(uint16_t *buf, uint8_t bufSize);
 
 #endif /* SOFTUART_H_ */

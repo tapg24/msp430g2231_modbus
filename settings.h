@@ -14,6 +14,12 @@
 
 // CPU
 
+// LED
+#define LED_0 BIT0
+#define LED_1 BIT6
+#define LED_OUT P1OUT
+#define LED_DIR P1DIR
+
 // SOFTUART
 #define	TXD	BIT1 // TXD on P1.1
 #define	RXD	BIT2 // RXD on P1.2
@@ -21,6 +27,9 @@
 #define BAUD_RATE 9600
 #define	BIT_TIME	(1000000 / 9600) // 9600 Baud, SMCLK=1MHz (1MHz/9600)=104
 #define	HALF_BIT_TIME	(BIT_TIME / 2) // Time for half a bit.
+
+// MODBUS
+#define MODBUS_TIMEOUT (BIT_TIME * 12)
 
 // ASCII values for the commands
 #define	TEST_SPEED	0x31
