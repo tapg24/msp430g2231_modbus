@@ -46,3 +46,7 @@ Temporary Items
 # Other Files
 # =========================
 *.obj
+*.obj
+*.map
+*.out
+*.xml
