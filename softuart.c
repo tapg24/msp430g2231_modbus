@@ -158,7 +158,7 @@ bool softuart_getc(uint16_t *c)
 	{
 		return false;
 	}
-	*c = (uint8_t)RXByte;
+	*c = RXByte;
 	hasReceived = false;
 	return true;
 }
