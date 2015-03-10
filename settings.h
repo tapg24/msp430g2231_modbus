@@ -12,13 +12,15 @@
 #include <stdint.h>
 #include "stdbool.h"
 
+#define BYTE uint8_t
+
 // CPU
 
 // LED
-#define LED_0 BIT0
-#define LED_1 BIT6
-#define LED_OUT P1OUT
-#define LED_DIR P1DIR
+//#define LED_0 BIT0
+//#define LED_1 BIT6
+//#define LED_OUT P1OUT
+//#define LED_DIR P1DIR
 
 // SOFTUART
 #define	TXD	BIT1 // TXD on P1.1

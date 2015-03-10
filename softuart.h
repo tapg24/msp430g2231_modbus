@@ -50,12 +50,10 @@ void Port_1_ISR(void);
 void Timer_A0_ISR(void);
 
 bool softuart_getc(uint16_t *c);
-void softuart_putc(uint16_t c);
+void softuart_putc(const uint8_t c);
 
-bool softuart_getchar(char *c);
-void softuart_putchar(char c);
-
-void softuart_puts(const char *str);
-bool softuart_readline(uint16_t *buf, uint8_t bufSize);
+void softuart_puts(const uint8_t *str);
+void softuart_read(uint8_t *buf, uint8_t bufSize);
+void softuart_write(const uint8_t *buf, uint8_t bufSize);
 
 #endif /* SOFTUART_H_ */

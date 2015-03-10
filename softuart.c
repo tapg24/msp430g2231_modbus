@@ -77,9 +77,9 @@ void Port_1_ISR(void) {
 	RXByte = 0; // Initialize RXByte
 	BitCnt = 0x9; // Load Bit counter, 8 bits + ST
 
-	CCR1 = TAR; // Initialize compare register
-	CCR1 += MODBUS_TIMEOUT; // Set time modbus timeout
-	CCTL1 = OUTMOD1 + CCIE; // Dissable TX and enable interrupts
+//	CCR1 = TAR; // Initialize compare register
+//	CCR1 += MODBUS_TIMEOUT; // Set time modbus timeout
+//	CCTL1 = OUTMOD1 + CCIE; // Dissable TX and enable interrupts
 }
 
 /**
@@ -144,13 +144,13 @@ void Timer_A0_ISR(void)
 /**
  * Timer interrupt routine. This handles timerout for transmiting and receiving.
  **/
-#pragma vector=TIMERA1_VECTOR
-__interrupt
-void Timer_A1_ISR(void)
-{
-//	TAIV &= ~(0x02); // CLEAR INTERRUPT
-	P1OUT ^= (LED_0);
-}
+//#pragma vector=TIMERA1_VECTOR
+//__interrupt
+//void Timer_A1_ISR(void)
+//{
+////	TAIV &= ~(0x02); // CLEAR INTERRUPT
+//	P1OUT ^= (LED_0);
+//}
 
 bool softuart_getc(uint16_t *c)
 {
@@ -158,23 +158,12 @@ bool softuart_getc(uint16_t *c)
 	{
 		return false;
 	}
-	*c = RXByte;
+	*c = (uint8_t)RXByte;
 	hasReceived = false;
 	return true;
 }
 
-bool softuart_getchar(char *c)
-{
-	if (!hasReceived)
-	{
-		return false;
-	}
-	*c = RXByte;
-	hasReceived = false;
-	return true;
-}
-
-void softuart_putc(uint16_t c)
+void softuart_putc(const uint8_t c)
 {
 	TXByte = c;
 	while (isReceiving)
@@ -191,7 +180,7 @@ void softuart_putc(uint16_t c)
 		; // Wait for previous TX completion
 }
 
-void softuart_puts(const char *str)
+void softuart_puts(const uint8_t *str)
 {
 	if (*str != 0)
 		softuart_putc(*str++);
@@ -199,12 +188,20 @@ void softuart_puts(const char *str)
 		softuart_putc(*str++);
 }
 
-bool softuart_readline(uint16_t *buf, uint8_t bufSize)
+void softuart_write(const uint8_t *buf, uint8_t bufSize)
+{
+	uint8_t idx = 0;
+	while(bufSize != idx)
+	{
+		softuart_putc(buf[idx++]);
+	}
+}
+
+void softuart_read(uint8_t *buf, uint8_t bufSize)
 {
 	uint8_t idx = 0;
 	while(bufSize != idx)
 	{
 		softuart_getc(&buf[idx++]);
 	}
-	return true;
 }
