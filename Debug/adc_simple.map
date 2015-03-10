@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v4.4.3                      
 ******************************************************************************
->> Linked Sat Mar 07 18:42:47 2015
+>> Linked Tue Mar 10 22:33:33 2015
 
 OUTPUT FILE NAME:   <adc_simple.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 0000fad8
