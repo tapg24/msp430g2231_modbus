@@ -37,8 +37,8 @@ void dispatchModbusRequest() {
 		// 0001: The total number of registers requested. (read 1 register)
 		// B298: The CRC (cyclic redundancy check) for error checking.
 
-//		softuart_read((uint8_t*)&recvBuff, 7);
-		softuart_read((uint8_t*)&recvBuff, 1);
+		softuart_read((uint8_t*)&recvBuff, 7);
+//		softuart_read((uint8_t*)&recvBuff, 1);
 //		if(softuart_getc(&c))
 //		{
 //			softuart_putc('[');
@@ -46,8 +46,8 @@ void dispatchModbusRequest() {
 //			softuart_putc(']');
 //		}
 
-//		if(recvBuff[0] == 0x11)
-		if(recvBuff[0] == 'a')
+		if(recvBuff[0] == 0x11)
+//		if(recvBuff[0] == 'a')
 		{
 			// Response
 			//
@@ -68,13 +68,13 @@ void dispatchModbusRequest() {
 			sendBuff[6] = 0xF4;
 			softuart_write((const uint8_t*)&sendBuff, 7);
 
-			sendBuff[0] = 0;
-			sendBuff[1] = 0;
-			sendBuff[2] = 0;
-			sendBuff[3] = 0;
-			sendBuff[4] = 0;
-			sendBuff[5] = 0;
-			sendBuff[6] = 0;
+			recvBuff[0] = 0;
+			recvBuff[1] = 0;
+			recvBuff[2] = 0;
+			recvBuff[3] = 0;
+			recvBuff[4] = 0;
+			recvBuff[5] = 0;
+			recvBuff[6] = 0;
 		}
 
 //		if(softuart_getc(&c))

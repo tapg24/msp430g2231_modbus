@@ -200,8 +200,10 @@ void softuart_write(const uint8_t *buf, uint8_t bufSize)
 void softuart_read(uint8_t *buf, uint8_t bufSize)
 {
 	uint8_t idx = 0;
+	uint8_t c;
 	while(bufSize != idx)
 	{
-		softuart_getc(&buf[idx++]);
+		softuart_getc(&c);
+		buf[idx++] = c;
 	}
 }
