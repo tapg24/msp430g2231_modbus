@@ -13,10 +13,8 @@
 #include "settings.h"
 
 uint8_t BitCnt; // Bit count, used when transmitting byte
-//uint16_t TXByte; // Value sent over UART when Transmit() is called
-char TXByte; // Value sent over UART when Transmit() is called
-//uint16_t RXByte; // Value recieved once hasRecieved is set
-char RXByte; // Value recieved once hasRecieved is set
+uint16_t TXRegister; // Value sent over UART when Transmit() is called
+uint16_t RXRegister; // Value recieved once hasRecieved is set
 
 uint8_t i; // 'for' loop variable
 
@@ -49,7 +47,7 @@ void Port_1_ISR(void);
 //__interrupt
 void Timer_A0_ISR(void);
 
-bool softuart_getc(uint16_t *c);
+bool softuart_getc(uint8_t *c);
 void softuart_putc(const uint8_t c);
 
 void softuart_puts(const uint8_t *str);

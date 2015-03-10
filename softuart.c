@@ -74,7 +74,7 @@ void Port_1_ISR(void) {
 	CCR0 = TAR; // Initialize compare register
 	CCR0 += HALF_BIT_TIME; // Set time till first bit
 	CCTL0 = OUTMOD1 + CCIE; // Dissable TX and enable interrupts
-	RXByte = 0; // Initialize RXByte
+	RXRegister = 0; // Initialize RXByte
 	BitCnt = 0x9; // Load Bit counter, 8 bits + ST
 
 //	CCR1 = TAR; // Initialize compare register
@@ -99,7 +99,7 @@ void Timer_A0_ISR(void)
 		}
 		else
 		{
-			if (TXByte & 0x01)
+			if (TXRegister & 0x01)
 			{
 				CCTL0 = ((CCTL0 & ~OUTMOD_7 ) | OUTMOD_1); //OUTMOD_7 defines the 'window' of the field.
 			}
@@ -107,7 +107,7 @@ void Timer_A0_ISR(void)
 			{
 				CCTL0 = ((CCTL0 & ~OUTMOD_7 ) | OUTMOD_5); //OUTMOD_7 defines the 'window' of the field.
 			}
-			TXByte = TXByte >> 1;
+			TXRegister = TXRegister >> 1;
 			BitCnt --;
 		}
 	}
@@ -121,10 +121,10 @@ void Timer_A0_ISR(void)
 			isReceiving = false;
 			P1IFG &= ~settings.SOFTUART_RXD_PIN; // clear RXD IFG (interrupt flag)
 			P1IE |= settings.SOFTUART_RXD_PIN; // enabled RXD interrupt
-			if ((RXByte & 0x201) == 0x200) // Validate the start and stop bits are correct
+			if ((RXRegister & 0x201) == 0x200) // Validate the start and stop bits are correct
 			{
-				RXByte = RXByte >> 1; // Remove start bit
-				RXByte &= 0xFF; // Remove stop bit
+				RXRegister = RXRegister >> 1; // Remove start bit
+				RXRegister &= 0xFF; // Remove stop bit
 				hasReceived = true;
 			}
 			__bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
@@ -133,9 +133,9 @@ void Timer_A0_ISR(void)
 		{
 			if ((P1IN & settings.SOFTUART_RXD_PIN) == settings.SOFTUART_RXD_PIN) // If bit is set?
 			{
-				RXByte |= 0x400; // Set the value in the RXByte
+				RXRegister |= 0x400; // Set the value in the RXByte
 			}
-			RXByte = RXByte >> 1; // Shift the bits down
+			RXRegister = RXRegister >> 1; // Shift the bits down
 			BitCnt--;
 		}
 	}
@@ -152,20 +152,20 @@ void Timer_A0_ISR(void)
 //	P1OUT ^= (LED_0);
 //}
 
-bool softuart_getc(uint16_t *c)
+bool softuart_getc(uint8_t *c)
 {
 	if (!hasReceived)
 	{
 		return false;
 	}
-	*c = RXByte;
+	*c = RXRegister;
 	hasReceived = false;
 	return true;
 }
 
 void softuart_putc(const uint8_t c)
 {
-	TXByte = c;
+	TXRegister = c;
 	while (isReceiving)
 		; // Wait for RX completion
 	CCTL0 = OUT; // TXD Idle as Mark
@@ -173,8 +173,8 @@ void softuart_putc(const uint8_t c)
 	BitCnt = 0xA; // Load Bit counter, 8 bits + ST/SP
 	CCR0 = TAR; // Initialize compare register
 	CCR0 += BIT_TIME; // Set time till first bit
-	TXByte |= 0x100; // Add stop bit to TXByte (which is logical 1)
-	TXByte = TXByte << 1; // Add start bit (which is logical 0)
+	TXRegister |= 0x100; // Add stop bit to TXByte (which is logical 1)
+	TXRegister = TXRegister << 1; // Add start bit (which is logical 0)
 	CCTL0 = CCIS_0 + OUTMOD_0 + CCIE + OUT; // Set signal, intial value, enable interrupts
 	while ( CCTL0 & CCIE)
 		; // Wait for previous TX completion

@@ -19,7 +19,7 @@ void dispatchModbusRequest() {
 	hasReceived = false;
 //	ADCDone = false;
 
-	uint16_t c;
+//	uint8_t c;
 	uint8_t recvBuff[7] = { 0 };
 	uint8_t sendBuff[7] = { 0 };
 
@@ -38,15 +38,16 @@ void dispatchModbusRequest() {
 		// B298: The CRC (cyclic redundancy check) for error checking.
 
 //		softuart_read((uint8_t*)&recvBuff, 7);
-//		softuart_read((uint8_t*)&recvBuff, 1);
-		if(softuart_getc(&c))
-		{
-			softuart_putc('[');
-			softuart_putc(c);
-			softuart_putc(']');
-		}
+		softuart_read((uint8_t*)&recvBuff, 1);
+//		if(softuart_getc(&c))
+//		{
+//			softuart_putc('[');
+//			softuart_putc(c);
+//			softuart_putc(']');
+//		}
 
-		if(recvBuff[0] == 0x11)
+//		if(recvBuff[0] == 0x11)
+		if(recvBuff[0] == 'a')
 		{
 			// Response
 			//
@@ -66,6 +67,14 @@ void dispatchModbusRequest() {
 			sendBuff[5] = 0xF8;
 			sendBuff[6] = 0xF4;
 			softuart_write((const uint8_t*)&sendBuff, 7);
+
+			sendBuff[0] = 0;
+			sendBuff[1] = 0;
+			sendBuff[2] = 0;
+			sendBuff[3] = 0;
+			sendBuff[4] = 0;
+			sendBuff[5] = 0;
+			sendBuff[6] = 0;
 		}
 
 //		if(softuart_getc(&c))
