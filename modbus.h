@@ -15,7 +15,7 @@ enum {
 } modbus_state;
 
 // request buffer
-uint8_t buffer[8];
+uint8_t buffer[10];
 
 // modbus id
 //uint8_t modbusId;

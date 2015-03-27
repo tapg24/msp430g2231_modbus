@@ -23,8 +23,8 @@ void main(void) {
 	P1IFG &= ~settings.SOFTUART_RXD_PIN; // Clear RXD (flag) before enabling interrupt
 	P1IE |= settings.SOFTUART_RXD_PIN; // Enable RXD interrupt
 
-	//P1DIR |= BIT0;
-	//P1OUT &= ~BIT0; // Turn off LED at P1.0
+	LED_DIR |= (RX_LED | TX_LED); // Set P1.0 and P1.6 to output direction
+	LED_OUT &= ~(RX_LED | TX_LED) ; // Set the LEDs off
 
 	initModbus();
 	dispatchModbusRequest();
