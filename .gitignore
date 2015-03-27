@@ -51,3 +51,4 @@ Temporary Items
 *.out
 *.xml
 Debug/adc10.obj
+*.obj
