@@ -17,10 +17,10 @@
 // CPU
 
 // LED
-//#define LED_0 BIT0
-//#define LED_1 BIT6
-//#define LED_OUT P1OUT
-//#define LED_DIR P1DIR
+#define RX_LED BIT0
+#define TX_LED BIT6
+#define LED_OUT P1OUT
+#define LED_DIR P1DIR
 
 // SOFTUART
 #define	TXD	BIT1 // TXD on P1.1

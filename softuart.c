@@ -68,6 +68,7 @@
 __interrupt
 void Port_1_ISR(void) {
 	isReceiving = true;
+	P1OUT |= (RX_LED);
 	P1IE &= ~settings.SOFTUART_RXD_PIN; // Disable RXD interrupt
 	P1IFG &= ~settings.SOFTUART_RXD_PIN; // Clear RXD IFG (interrupt flag)
 	TACTL = TASSEL_2 + MC_2; // SMCLK, continuous mode
@@ -126,6 +127,7 @@ void Timer_A0_ISR(void)
 				RXRegister = RXRegister >> 1; // Remove start bit
 				RXRegister &= 0xFF; // Remove stop bit
 				hasReceived = true;
+				P1OUT &= ~(RX_LED);
 			}
 			__bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
 		}
@@ -166,6 +168,7 @@ bool softuart_getc(uint8_t *c)
 void softuart_putc(const uint8_t c)
 {
 	TXRegister = c;
+	P1OUT |= (TX_LED);
 	while (isReceiving)
 		; // Wait for RX completion
 	CCTL0 = OUT; // TXD Idle as Mark
@@ -178,6 +181,7 @@ void softuart_putc(const uint8_t c)
 	CCTL0 = CCIS_0 + OUTMOD_0 + CCIE + OUT; // Set signal, intial value, enable interrupts
 	while ( CCTL0 & CCIE)
 		; // Wait for previous TX completion
+	P1OUT ^= (TX_LED);
 }
 
 void softuart_puts(const uint8_t *str)
@@ -197,13 +201,20 @@ void softuart_write(const uint8_t *buf, uint8_t bufSize)
 	}
 }
 
-void softuart_read(uint8_t *buf, uint8_t bufSize)
+uint8_t softuart_read(uint8_t *buf, uint8_t bufSize)
 {
+	uint8_t limit = 0;
 	uint8_t idx = 0;
 	uint8_t c;
-	while(bufSize != idx)
+	while((bufSize != idx) && (limit != 40))
 	{
-		softuart_getc(&c);
-		buf[idx++] = c;
+		if(hasReceived)
+		{
+			softuart_getc(&c);
+			buf[idx] = c;
+			idx++;
+		}
+		limit++;
 	}
+	return idx;
 }

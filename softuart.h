@@ -51,7 +51,7 @@ bool softuart_getc(uint8_t *c);
 void softuart_putc(const uint8_t c);
 
 void softuart_puts(const uint8_t *str);
-void softuart_read(uint8_t *buf, uint8_t bufSize);
+uint8_t softuart_read(uint8_t *buf, uint8_t bufSize);
 void softuart_write(const uint8_t *buf, uint8_t bufSize);
 
 #endif /* SOFTUART_H_ */
